@@ -21,28 +21,28 @@ import PropTypes from "prop-types";
 import * as styles from "./styles";
 import data from "./data";
 
-function TabsDisplayer(props) {
-  
-    let { data } = props;
-    let { activeIndex } = props;
-
+function Tabs(props) {
+    Tabs.PropTypes = {
+      data: PropTypes.array.isRequired,
+      activeIndex: PropTypes.number.isRequired,
+      selectTab: PropTypes.func.isRequired
+    }
+    let { data, activeIndex, selectTab } = props;
     let tabs = data.map((item, index) => {
       let isActive = index === activeIndex;
       let style = isActive ? styles.activeTab : styles.tab;
-
       return (
-        <Tabs style = {style} index={index} selectTab = {props.selectTab} item={item}/>
+        <Tab style = {style} index={index} selectTab = {selectTab} item={item}/>
       );
     });
     return (
-      <Description tabs={tabs} data={data} activeIndex={activeIndex}/>
+      <TabPanel tabs={tabs} data={data} activeIndex={activeIndex}/>
     );
    
 }
 
-function Tabs(props){
-  let {style} = props;
-  let {index} = props;
+function Tab(props){
+  let {style, index} = props;
   return (
     <div
       key={index}
@@ -55,7 +55,7 @@ function Tabs(props){
   );
 }
 
-function Description(props) {
+function TabPanel(props) {
   let {tabs, activeIndex, data} = props;
   return (
     <div className="Tabs">
@@ -80,7 +80,7 @@ class App extends React.Component {
 
         <button onClick={() => this.selectTab(1)} >Go to "Step 2"</button>
 
-        <TabsDisplayer data={this.props.tabs} activeIndex = {this.state.activeIndex} selectTab = {this.selectTab} />
+        <Tabs data={this.props.tabs} activeIndex = {this.state.activeIndex} selectTab = {this.selectTab} />
       </div>
     );
   }
