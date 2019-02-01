@@ -21,55 +21,66 @@ import PropTypes from "prop-types";
 import * as styles from "./styles";
 import data from "./data";
 
-class Tabs extends React.Component {
-  static propTypes = {
-    data: PropTypes.array.isRequired
-  };
-
-  state = { activeIndex: 0 };
-
-  selectTab = index => this.setState({ activeIndex: index });
-
-  render() {
-    let { data } = this.props;
-    let { activeIndex } = this.state;
+function TabsDisplayer(props) {
+  
+    let { data } = props;
+    let { activeIndex } = props;
 
     let tabs = data.map((item, index) => {
       let isActive = index === activeIndex;
       let style = isActive ? styles.activeTab : styles.tab;
 
       return (
-        <div
-          key={index}
-          className="Tab"
-          style={style}
-          onClick={() => this.selectTab(index)}
-        >
-          {item.name}
-        </div>
+        <Tabs style = {style} index={index} selectTab = {props.selectTab} item={item}/>
       );
     });
-
     return (
-      <div className="Tabs">
-        {tabs}
-        <div className="TabPanel" style={styles.panel}>
-          {data[activeIndex].description}
-        </div>
-      </div>
+      <Description tabs={tabs} data={data} activeIndex={activeIndex}/>
     );
-  }
+   
+}
+
+function Tabs(props){
+  let {style} = props;
+  let {index} = props;
+  return (
+    <div
+      key={index}
+      className="Tab"
+      style={style}
+      onClick={() => props.selectTab(index)}
+    >
+      {props.item.name}
+    </div>
+  );
+}
+
+function Description(props) {
+  let {tabs, activeIndex, data} = props;
+  return (
+    <div className="Tabs">
+      {tabs}
+      <div className="TabPanel" style={styles.panel}>
+        {data[activeIndex].description}
+      </div>
+    </div>
+  );
+
 }
 
 class App extends React.Component {
+  state = { activeIndex: 0 };
+
+  selectTab = index => this.setState({ activeIndex: index });
+
   render() {
     return (
       <div>
         <h1>Props v. State</h1>
 
-        <button>Go to "Step 2"</button>
+        <button onClick={() => this.selectTab(1)} >Go to "Step 2"</button>
 
-        <Tabs data={this.props.tabs} />
+        <TabsDisplayer data={this.props.tabs} activeIndex = {this.state.activeIndex} selectTab = {this.selectTab} />
       </div>
     );
   }
