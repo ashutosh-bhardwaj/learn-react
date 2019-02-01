@@ -21,55 +21,66 @@ import PropTypes from "prop-types";
 import * as styles from "./styles";
 import data from "./data";
 
-class Tabs extends React.Component {
-  static propTypes = {
-    data: PropTypes.array.isRequired
-  };
+function Tabs(props) {
+    Tabs.PropTypes = {
+      data: PropTypes.array.isRequired,
+      activeIndex: PropTypes.number.isRequired,
+      selectTab: PropTypes.func.isRequired
+    }
+    let { data, activeIndex, selectTab } = props;
+    let tabs = data.map((item, index) => {
+      let isActive = index === activeIndex;
+      let style = isActive ? styles.activeTab : styles.tab;
+      return (
+        <Tab style = {style} index={index} selectTab = {selectTab} item={item}/>
+      );
+    });
+    return (
+      <TabPanel tabs={tabs} data={data} activeIndex={activeIndex}/>
+    );
+   
+}
 
+function Tab(props){
+  let {style, index} = props;
+  return (
+    <div
+      key={index}
+      className="Tab"
+      style={style}
+      onClick={() => props.selectTab(index)}
+    >
+      {props.item.name}
+    </div>
+  );
+}
+
+function TabPanel(props) {
+  let {tabs, activeIndex, data} = props;
+  return (
+    <div className="Tabs">
+      {tabs}
+      <div className="TabPanel" style={styles.panel}>
+        {data[activeIndex].description}
+      </div>
+    </div>
+  );
+
+}
+
+class App extends React.Component {
   state = { activeIndex: 0 };
 
   selectTab = index => this.setState({ activeIndex: index });
 
   render() {
-    let { data } = this.props;
-    let { activeIndex } = this.state;
-
-    let tabs = data.map((item, index) => {
-      let isActive = index === activeIndex;
-      let style = isActive ? styles.activeTab : styles.tab;
-
-      return (
-        <div
-          key={index}
-          className="Tab"
-          style={style}
-          onClick={() => this.selectTab(index)}
-        >
-          {item.name}
-        </div>
-      );
-    });
-
-    return (
-      <div className="Tabs">
-        {tabs}
-        <div className="TabPanel" style={styles.panel}>
-          {data[activeIndex].description}
-        </div>
-      </div>
-    );
-  }
-}
-
-class App extends React.Component {
-  render() {
     return (
       <div>
         <h1>Props v. State</h1>
 
-        <button>Go to "Step 2"</button>
+        <button onClick={() => this.selectTab(1)} >Go to "Step 2"</button>
 
-        <Tabs data={this.props.tabs} />
+        <Tabs data={this.props.tabs} activeIndex = {this.state.activeIndex} selectTab = {this.selectTab} />
       </div>
     );
   }
