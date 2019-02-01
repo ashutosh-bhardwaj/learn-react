@@ -21,18 +21,11 @@ import PropTypes from "prop-types";
 import * as styles from "./styles";
 import data from "./data";
 
-class Tabs extends React.Component {
-  static propTypes = {
-    data: PropTypes.array.isRequired
-  };
+// class Tabs extends React.Component {
+function Tabs(props) {
 
-  state = { activeIndex: 0 };
-
-  selectTab = index => this.setState({ activeIndex: index });
-
-  render() {
-    let { data } = this.props;
-    let { activeIndex } = this.state;
+    let { data } = props;
+    let { activeIndex } = props;
 
     let tabs = data.map((item, index) => {
       let isActive = index === activeIndex;
@@ -43,7 +36,7 @@ class Tabs extends React.Component {
           key={index}
           className="Tab"
           style={style}
-          onClick={() => this.selectTab(index)}
+          onClick={() => props.selectTab(index)}
         >
           {item.name}
         </div>
@@ -58,18 +51,35 @@ class Tabs extends React.Component {
         </div>
       </div>
     );
-  }
 }
 
 class App extends React.Component {
+
+  state = {
+    activeIndex: 0,
+  }
+
+  handleStepClick = () => {
+    console.log("handleStepClick Called")
+    this.setState({
+      activeIndex: 1,
+    })
+  }
+
+  selectTab = index => this.setState({ activeIndex: index });
+
   render() {
     return (
       <div>
         <h1>Props v. State</h1>
 
-        <button>Go to "Step 2"</button>
+        <button onClick={this.handleStepClick}>Go to "Step 2"</button>
 
-        <Tabs data={this.props.tabs} />
+        <Tabs 
+          data={this.props.tabs}
+          activeIndex={this.state.activeIndex}
+          selectTab={this.selectTab}
+        />
       </div>
     );
   }
